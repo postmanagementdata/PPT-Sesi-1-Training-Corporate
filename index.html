@@ -1,0 +1,500 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="theme-color" content="#281c17" />
+  <meta name="description" content="Presentasi Sesi 1 Corporate Excel Training — Raw Data Preparation & Master Data Fundamentals oleh Post Management Data." />
+  <title>Sesi 1 — Raw Data Preparation | Post Management Data</title>
+  <style>
+    :root {
+      --espresso: #281c17;
+      --coffee: #493126;
+      --brown: #6a4734;
+      --caramel: #c58d55;
+      --cream: #f8f2e9;
+      --paper: #fffdf9;
+      --ink: #30241e;
+      --muted: #82756b;
+      --line: #e7d9c9;
+      --sage: #e6eee5;
+      --blue: #e7edf2;
+      --rose: #f5e5de;
+      --goldwash: #f5ead9;
+      --shadow: 0 22px 70px rgba(22, 14, 10, .22);
+    }
+    * { box-sizing: border-box; }
+    html, body { margin: 0; min-height: 100%; background: var(--espresso); color: var(--ink); font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; }
+    body { min-height: 100vh; display: flex; flex-direction: column; overflow-x: hidden; }
+    button { font: inherit; }
+    .topbar { height: 58px; padding: 0 22px; color: #f9eee2; display: flex; align-items: center; justify-content: space-between; gap: 14px; border-bottom: 1px solid rgba(255,255,255,.12); background: rgba(26,18,14,.78); }
+    .brand { display: flex; align-items: center; gap: 11px; min-width: 0; }
+    .brand-mark { width: 33px; height: 33px; flex: 0 0 auto; border: 1px solid rgba(235,190,137,.8); border-radius: 10px; display: grid; place-items: center; color: #e9b982; font-weight: 800; font-size: 13px; letter-spacing: -.08em; }
+    .brand-copy { min-width: 0; }
+    .brand-title { font-size: 12px; letter-spacing: .16em; font-weight: 800; white-space: nowrap; }
+    .brand-sub { margin-top: 2px; font-size: 10px; color: #c5b4a8; letter-spacing: .08em; text-transform: uppercase; }
+    .top-actions { display: flex; align-items: center; gap: 8px; }
+    .quiet-btn { border: 1px solid rgba(255,255,255,.19); background: transparent; color: #f9eee2; border-radius: 9px; padding: 8px 11px; font-size: 11px; cursor: pointer; transition: .2s; }
+    .quiet-btn:hover, .quiet-btn:focus-visible { background: rgba(255,255,255,.1); outline: none; }
+    main { flex: 1; display: grid; place-items: center; padding: 20px 18px; position: relative; }
+    .presentation { width: min(100%, 1120px); aspect-ratio: 16 / 9; max-height: calc(100vh - 142px); min-height: 390px; position: relative; background: var(--cream); border-radius: 16px; overflow: hidden; box-shadow: var(--shadow); }
+    .slide { position: absolute; inset: 0; padding: clamp(28px, 4.3vw, 58px) clamp(28px, 5vw, 68px) 52px; overflow: auto; opacity: 0; transform: translateX(24px); pointer-events: none; transition: opacity .3s ease, transform .3s ease; background: radial-gradient(ellipse at 100% 0%, rgba(197,141,85,.09), transparent 32%), var(--cream); }
+    .slide.active { opacity: 1; transform: translateX(0); pointer-events: auto; z-index: 1; }
+    .slide.exit-left { transform: translateX(-24px); }
+    .slide-number { position: absolute; right: 27px; bottom: 20px; color: #a59484; font-size: 10px; letter-spacing: .16em; font-weight: 700; }
+    .eyebrow { display: inline-flex; align-items: center; gap: 9px; color: var(--brown); font-size: 10px; letter-spacing: .18em; text-transform: uppercase; font-weight: 800; margin-bottom: 13px; }
+    .eyebrow::before { content: ""; width: 24px; height: 2px; background: var(--caramel); }
+    h1, h2, h3, p { margin-top: 0; }
+    h1 { font-family: Georgia, "Times New Roman", serif; font-weight: 500; font-size: clamp(36px, 5vw, 66px); letter-spacing: -.045em; line-height: 1.02; margin-bottom: 20px; }
+    h2 { font-family: Georgia, "Times New Roman", serif; font-size: clamp(28px, 3.4vw, 42px); line-height: 1.1; letter-spacing: -.035em; font-weight: 500; margin-bottom: 14px; }
+    h3 { font-size: 15px; line-height: 1.25; margin-bottom: 8px; color: var(--coffee); }
+    p { color: #66574c; line-height: 1.55; font-size: clamp(12px, 1.15vw, 15px); }
+    .lead { max-width: 650px; font-size: clamp(15px, 1.65vw, 19px); color: #6c5b4e; line-height: 1.55; }
+    .accent { color: var(--caramel); }
+    .cover { background: linear-gradient(120deg, rgba(40,28,23,.99), rgba(73,49,38,.97)); color: var(--cream); }
+    .cover::before { content: ""; position: absolute; width: 50%; aspect-ratio: 1; right: -12%; top: -25%; border-radius: 50%; border: 1px solid rgba(223,176,126,.28); box-shadow: 0 0 0 34px rgba(223,176,126,.04), 0 0 0 74px rgba(223,176,126,.035), 0 0 0 125px rgba(223,176,126,.025); }
+    .cover::after { content: ""; position: absolute; right: 12%; bottom: 15%; width: 19%; height: 29%; border: 1px solid rgba(223,176,126,.3); border-radius: 48% 48% 8px 8px; transform: rotate(14deg); }
+    .cover .eyebrow { color: #e9bc8e; }
+    .cover h1 { max-width: 700px; position: relative; z-index: 1; }
+    .cover .lead { color: #d8c8ba; max-width: 560px; position: relative; z-index: 1; }
+    .cover-meta { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 26px; position: relative; z-index: 1; }
+    .pill { padding: 9px 13px; border: 1px solid rgba(255,255,255,.18); border-radius: 100px; color: #e8d9ca; font-size: 11px; letter-spacing: .02em; }
+    .cover-footer { position: absolute; left: clamp(28px, 5vw, 68px); bottom: 27px; color: #bba697; font-size: 10px; letter-spacing: .14em; text-transform: uppercase; }
+    .layout-two { display: grid; grid-template-columns: 1.08fr .92fr; gap: clamp(20px, 4vw, 46px); align-items: center; }
+    .card-grid { display: grid; grid-template-columns: repeat(2, minmax(0,1fr)); gap: 13px; margin-top: 25px; }
+    .card { background: rgba(255,253,249,.88); border: 1px solid var(--line); border-radius: 13px; padding: 17px 17px 15px; min-width: 0; }
+    .card p { font-size: 12px; margin-bottom: 0; }
+    .card .number { color: var(--caramel); font-family: Georgia, serif; font-size: 26px; margin-bottom: 10px; }
+    .icon-box { width: 35px; height: 35px; border-radius: 10px; background: var(--goldwash); color: var(--brown); display: grid; place-items: center; font-size: 15px; font-weight: 800; margin-bottom: 12px; }
+    .side-note { background: var(--coffee); color: var(--cream); border-radius: 14px; padding: 23px; position: relative; overflow: hidden; }
+    .side-note::after { content:""; position:absolute; right:-35px; bottom:-50px; width:150px; height:150px; border:1px solid rgba(255,255,255,.13); border-radius:50%; box-shadow: 0 0 0 22px rgba(255,255,255,.035); }
+    .side-note h3 { color: #f3cfaa; }
+    .side-note p { color: #e1d1c4; font-size: 12px; }
+    .side-note p:last-child { margin-bottom: 0; }
+    .flow { display: flex; align-items: stretch; gap: 8px; margin: 28px 0 22px; }
+    .flow-step { flex: 1; background: var(--paper); border: 1px solid var(--line); border-radius: 12px; padding: 15px 12px; min-width: 0; }
+    .flow-step b { display: block; font-size: 12px; color: var(--coffee); margin-bottom: 6px; }
+    .flow-step span { display: block; font-size: 10px; line-height: 1.4; color: var(--muted); }
+    .flow-arrow { align-self: center; color: var(--caramel); font-size: 20px; font-weight: 700; }
+    .bottom-callout { display: flex; align-items: center; gap: 13px; padding: 15px 18px; background: var(--goldwash); border-left: 3px solid var(--caramel); border-radius: 8px; color: var(--coffee); font-size: 12px; line-height: 1.5; }
+    .compare { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-top: 25px; }
+    .compare-panel { border-radius: 14px; padding: 21px; min-height: 228px; }
+    .raw { background: var(--rose); }
+    .master { background: var(--sage); }
+    .panel-tag { display: inline-block; font-size: 9px; text-transform: uppercase; letter-spacing: .15em; font-weight: 800; border-radius: 100px; padding: 6px 9px; background: rgba(255,255,255,.66); margin-bottom: 13px; }
+    .compare-panel ul, .checklist { padding-left: 18px; margin: 10px 0 0; color: #65574d; font-size: 12px; line-height: 1.8; }
+    .mini-table { width: 100%; border-collapse: collapse; background: var(--paper); border: 1px solid var(--line); overflow: hidden; border-radius: 10px; margin-top: 20px; font-size: 11px; }
+    .mini-table th { text-align: left; color: #f8f0e8; background: var(--coffee); font-size: 10px; font-weight: 700; padding: 11px 12px; }
+    .mini-table td { border-bottom: 1px solid #eee4d8; padding: 11px 12px; color: #5d4e43; }
+    .mini-table tr:last-child td { border-bottom: 0; }
+    .ok { color: #43724d; font-weight: 800; }
+    .bad { color: #a24e37; font-weight: 800; }
+    .formula { font: 12px/1.7 ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; color: #563c2b; background: #f2e6d6; border: 1px solid #e5d2bc; padding: 12px 14px; border-radius: 8px; display: inline-block; overflow-wrap: anywhere; }
+    .formula.dark { background: rgba(255,255,255,.08); border-color: rgba(255,255,255,.16); color: #f6d5b1; }
+    .formula-stack { display: grid; gap: 10px; margin-top: 16px; }
+    .formula-row { display: grid; grid-template-columns: minmax(100px, .45fr) 1fr; align-items: center; gap: 12px; background: var(--paper); border: 1px solid var(--line); padding: 12px 14px; border-radius: 9px; }
+    .formula-row strong { font-size: 11px; color: var(--coffee); }
+    .formula-row code { font-size: 11px; color: #765337; white-space: normal; overflow-wrap: anywhere; }
+    .split-example { display:grid; grid-template-columns:1fr 1fr; gap:15px; margin-top:20px; }
+    .example-card { background:var(--paper); border:1px solid var(--line); border-radius:12px; padding:16px; }
+    .example-card .sample { display:block; font: 14px ui-monospace, monospace; color:var(--coffee); background:#f2e6d6; border-radius:7px; padding:11px; margin:10px 0; }
+    .example-card small { color:var(--muted); font-size:10px; line-height:1.5; display:block; }
+    .steps { counter-reset: step; display:grid; gap:12px; margin-top:22px; }
+    .step { display:grid; grid-template-columns:40px 1fr; gap:14px; align-items:start; }
+    .step::before { counter-increment:step; content:counter(step, decimal-leading-zero); width:38px; height:38px; border-radius:12px; display:grid; place-items:center; background:var(--goldwash); color:var(--brown); font-size:11px; font-weight:800; }
+    .step h3 { margin: 3px 0 4px; }
+    .step p { font-size: 11px; margin-bottom: 0; }
+    .role-grid { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:12px; margin-top:22px; }
+    .role { background:var(--paper); border:1px solid var(--line); border-radius:12px; padding:15px; min-height:105px; }
+    .role .role-no { color:var(--caramel); font: 22px Georgia,serif; }
+    .role h3 { margin-top:7px; font-size:12px; }
+    .role p { font-size:10px; margin-bottom:0; }
+    .timeline { display:grid; grid-template-columns: 1fr 1fr 1fr; gap:10px; margin-top:24px; }
+    .time-box { background:var(--paper); border:1px solid var(--line); border-radius:12px; padding:16px; }
+    .time-box strong { display:block; color:var(--brown); font: 27px Georgia,serif; margin-bottom:5px; }
+    .time-box span { display:block; font-size:11px; color:var(--muted); line-height:1.4; }
+    .time-box.active-time { background:var(--coffee); border-color:var(--coffee); }
+    .time-box.active-time strong, .time-box.active-time span { color:#f8e5d2; }
+    .keyline { display:flex; gap:11px; margin-top:18px; align-items:flex-start; }
+    .keyline .dot { width:7px; height:7px; margin-top:6px; border-radius:50%; background:var(--caramel); flex:0 0 auto; }
+    .keyline p { margin-bottom:0; font-size:12px; }
+    .note-pop { position: fixed; inset: 0; z-index: 10; display:none; background:rgba(11,8,6,.52); padding:18px; align-items:center; justify-content:center; }
+    .note-pop.open { display:flex; }
+    .note-card { width:min(620px,100%); max-height:80vh; overflow:auto; background:var(--paper); border-radius:16px; padding:25px; box-shadow:var(--shadow); }
+    .note-head { display:flex; align-items:center; justify-content:space-between; gap:15px; }
+    .note-head h3 { font-size:19px; font-family:Georgia,serif; }
+    .note-card p, .note-card li { font-size:13px; }
+    .controls { min-height:64px; color:#f1e2d5; padding:10px 22px; display:flex; align-items:center; justify-content:space-between; gap:14px; border-top:1px solid rgba(255,255,255,.12); background:rgba(26,18,14,.78); }
+    .progress-wrap { display:flex; align-items:center; gap:12px; flex:1; max-width:390px; }
+    .progress-track { height:3px; background:rgba(255,255,255,.18); border-radius:20px; flex:1; overflow:hidden; }
+    .progress-fill { height:100%; width:0; background:var(--caramel); transition:width .25s ease; }
+    .counter { font-size:11px; color:#cbb9aa; min-width:45px; font-variant-numeric:tabular-nums; }
+    .navs { display:flex; gap:8px; align-items:center; }
+    .nav-btn { background:var(--caramel); color:#241812; border:0; border-radius:10px; width:40px; height:38px; display:grid; place-items:center; cursor:pointer; font-size:18px; font-weight:800; transition:transform .15s, opacity .15s; }
+    .nav-btn:hover { transform:translateY(-1px); }
+    .nav-btn:disabled { opacity:.35; cursor:not-allowed; transform:none; }
+    .keyboard-hint { font-size:10px; color:#ad9b8c; }
+    .hidden { display:none !important; }
+    @media (max-width: 720px) {
+      .topbar { height:54px; padding:0 12px; }
+      .brand-sub, .keyboard-hint, #outlineBtn { display:none; }
+      .brand-title { font-size:10px; letter-spacing:.1em; }
+      .quiet-btn { padding:7px 9px; font-size:10px; }
+      main { padding:12px 8px; }
+      .presentation { aspect-ratio:auto; height:min(72vh, 690px); min-height:480px; max-height:none; border-radius:12px; }
+      .slide { padding:27px 22px 48px; }
+      h1 { font-size:40px; }
+      h2 { font-size:30px; }
+      .layout-two { grid-template-columns:1fr; gap:16px; }
+      .card-grid { gap:8px; margin-top:16px; }
+      .card { padding:12px; }
+      .card p { font-size:10px; }
+      .flow { flex-direction:column; gap:6px; margin:17px 0; }
+      .flow-step { padding:10px 12px; }
+      .flow-arrow { transform:rotate(90deg); align-self:center; font-size:15px; line-height:1; }
+      .compare, .split-example { gap:9px; }
+      .compare-panel { padding:13px; min-height:unset; }
+      .compare-panel ul { padding-left:14px; font-size:10px; line-height:1.6; }
+      .role-grid { grid-template-columns:repeat(2,minmax(0,1fr)); gap:8px; }
+      .role { padding:11px; min-height:100px; }
+      .timeline { gap:7px; }
+      .time-box { padding:11px; }
+      .time-box strong { font-size:23px; }
+      .time-box span { font-size:9px; }
+      .formula-row { grid-template-columns:1fr; gap:4px; padding:10px; }
+      .mini-table { font-size:9px; }
+      .mini-table th, .mini-table td { padding:8px 7px; }
+      .side-note { padding:17px; }
+      .controls { padding:9px 12px; min-height:58px; }
+      .progress-wrap { max-width:unset; }
+      .nav-btn { width:37px; height:35px; }
+      .cover-footer { left:22px; }
+    }
+    @media (prefers-reduced-motion: reduce) { *, *::before, *::after { transition:none !important; scroll-behavior:auto !important; } }
+    @media print {
+      html, body { background:#fff; }
+      .topbar, .controls, .note-pop { display:none !important; }
+      main { display:block; padding:0; }
+      .presentation { width:100%; max-height:none; height:auto; aspect-ratio:auto; border-radius:0; overflow:visible; box-shadow:none; }
+      .slide, .slide.active { position:relative; inset:auto; opacity:1; transform:none; pointer-events:auto; width:100%; height:56.25vw; min-height:0; page-break-after:always; overflow:hidden; display:block; }
+    }
+  </style>
+</head>
+<body>
+  <header class="topbar">
+    <div class="brand" aria-label="Post Management Data">
+      <div class="brand-mark">PMD</div>
+      <div class="brand-copy">
+        <div class="brand-title">POST MANAGEMENT DATA</div>
+        <div class="brand-sub">Corporate Excel Training</div>
+      </div>
+    </div>
+    <div class="top-actions">
+      <button class="quiet-btn" id="outlineBtn" type="button" title="Lihat ringkasan slide">Daftar materi</button>
+      <button class="quiet-btn" id="notesBtn" type="button" title="Buka catatan tutor">Catatan tutor</button>
+      <button class="quiet-btn" id="fullscreenBtn" type="button" title="Mode layar penuh">⛶ Layar penuh</button>
+    </div>
+  </header>
+
+  <main>
+    <div class="presentation" id="presentation" aria-label="Presentasi Sesi 1" aria-live="polite">
+      <section class="slide cover active" data-title="Pembuka" data-note="Buka sesi dengan menyampaikan bahwa tujuan hari ini bukan sekadar membuat tabel rapi. Peserta akan belajar menyiapkan data yang konsisten supaya bisa dipakai ulang pada tahap lookup, costing, BQ, dan report. Sampaikan bahwa contoh yang digunakan bersifat simulasi.">
+        <div class="eyebrow">SESI 01 · DASAR WORKFLOW</div>
+        <h1>Raw Data<br><span class="accent">Preparation</span> &amp;<br>Master Data</h1>
+        <p class="lead">Fondasi data yang rapi, konsisten, dan siap dipakai untuk proses Excel yang lebih otomatis.</p>
+        <div class="cover-meta"><span class="pill">Corporate Excel Training</span><span class="pill">IFM Operations</span><span class="pill">60 menit</span></div>
+        <div class="cover-footer">Post Management Data · Learn it, structure it, automate it</div>
+        <div class="slide-number">01 / 13</div>
+      </section>
+
+      <section class="slide" data-title="Target pembelajaran" data-note="Jelaskan empat hasil yang diharapkan: peserta memahami beda raw data dan master data; mengenali struktur tabel serta kode unik; mencoba cleaning dasar untuk teks, tanggal, dan angka; serta melakukan pengecekan sebelum data dipakai rumus. Tekankan bahwa sesi pertama adalah fondasi, belum masuk ke IF sebagai materi utama karena IF dibahas pada sesi kedua.">
+        <div class="eyebrow">01 · LEARNING OUTCOMES</div>
+        <h2>Setelah sesi ini, peserta mampu…</h2>
+        <p class="lead">Menyiapkan data sebelum otomatisasi, bukan hanya mempercantik tampilannya.</p>
+        <div class="card-grid">
+          <div class="card"><div class="icon-box">01</div><h3>Memahami struktur data</h3><p>Membedakan kolom, record, tipe data, dan kode unik.</p></div>
+          <div class="card"><div class="icon-box">02</div><h3>Membedakan sumber data</h3><p>Mengenali fungsi Raw Request dan Master Data.</p></div>
+          <div class="card"><div class="icon-box">03</div><h3>Cleaning dasar</h3><p>Menangani spasi, konsistensi teks, tanggal, dan angka.</p></div>
+          <div class="card"><div class="icon-box">04</div><h3>Validasi awal</h3><p>Memastikan data masuk akal sebelum dipakai formula.</p></div>
+        </div>
+        <div class="slide-number">02 / 13</div>
+      </section>
+
+      <section class="slide" data-title="Alur kerja data" data-note="Gunakan diagram ini untuk menunjukkan hubungan sesi pertama dengan keseluruhan pelatihan. Raw Data adalah sumber awal, lalu diperiksa dan disiapkan. Master Data memberi referensi standar. Setelah itu barulah data digunakan untuk lookup, costing/BQ, dan output. Alur tidak harus dibuat sekaligus pada sesi pertama; hari ini fokusnya adalah fondasi.">
+        <div class="eyebrow">02 · BIG PICTURE</div>
+        <h2>Data yang baik punya alur</h2>
+        <p class="lead">Output otomatis hanya akan sebaik data dan struktur yang menjadi fondasinya.</p>
+        <div class="flow">
+          <div class="flow-step"><b>01 · Raw Data</b><span>Request / data masuk</span></div><div class="flow-arrow">›</div>
+          <div class="flow-step"><b>02 · Prepare</b><span>Filter, clean, helper</span></div><div class="flow-arrow">›</div>
+          <div class="flow-step"><b>03 · Master Data</b><span>Kode referensi standar</span></div><div class="flow-arrow">›</div>
+          <div class="flow-step"><b>04 · Costing / BQ</b><span>Lookup dan kalkulasi</span></div><div class="flow-arrow">›</div>
+          <div class="flow-step"><b>05 · Output</b><span>Quotation / report</span></div>
+        </div>
+        <div class="bottom-callout"><strong>Prinsip utama:</strong> pisahkan data input, proses, dan output. Jangan mengedit hasil akhir secara manual jika seharusnya dihasilkan dari sumber data.</div>
+        <div class="slide-number">03 / 13</div>
+      </section>
+
+      <section class="slide" data-title="Raw Data vs Master Data" data-note="Raw Request merekam apa yang dikirim atau diminta; isinya bisa belum seragam. Master Data berisi referensi yang sudah distandardisasi, misalnya kode item, nama item, satuan, dan kategori. Jangan menghapus atau menimpa sumber asli saat melakukan cleaning. Jika ada kode item belum dikenal, tandai untuk review, jangan menebak kodenya.">
+        <div class="eyebrow">03 · DATA FUNDAMENTALS</div>
+        <h2>Raw Data bukan Master Data</h2>
+        <p class="lead">Keduanya penting, tetapi punya fungsi yang berbeda.</p>
+        <div class="compare">
+          <div class="compare-panel raw"><span class="panel-tag">Input / sumber</span><h3>Raw Request</h3><p>Data awal dari formulir, email, atau permintaan operasional.</p><ul><li>Bisa mengandung typo atau spasi berlebih</li><li>Format tanggal/angka bisa berbeda</li><li>Perlu diperiksa sebelum dipakai</li></ul></div>
+          <div class="compare-panel master"><span class="panel-tag">Referensi standar</span><h3>Master Data</h3><p>Daftar referensi yang dijaga konsistensinya.</p><ul><li>Kode item unik dan stabil</li><li>Nama, unit, kategori konsisten</li><li>Menjadi sumber untuk proses lookup</li></ul></div>
+        </div>
+        <div class="bottom-callout" style="margin-top:15px">Contoh: request menulis “Kertas A4 ”, sedangkan Master Data memakai nama baku “Kertas A4”. Bersihkan dengan aturan yang jelas dan tetap cek kesesuaian item.</div>
+        <div class="slide-number">04 / 13</div>
+      </section>
+
+      <section class="slide" data-title="Struktur tabel yang sehat" data-note="Terangkan istilah: kolom adalah field/atribut; baris adalah record/transaksi; tipe data harus sesuai dengan isi kolom; unique key adalah pembeda yang stabil. Satu baris sebaiknya mewakili satu item atau satu kejadian. Hindari merge cell, subtotal di tengah data mentah, dan satu sel berisi banyak nilai yang seharusnya terpisah.">
+        <div class="eyebrow">04 · TABLE STRUCTURE</div>
+        <h2>Struktur tabel yang sehat</h2>
+        <p class="lead">Satu baris = satu record. Satu kolom = satu jenis informasi.</p>
+        <table class="mini-table">
+          <thead><tr><th>Kode Item</th><th>Nama Item</th><th>Kategori</th><th>Unit</th><th>Qty</th></tr></thead>
+          <tbody>
+            <tr><td>ATK-001</td><td>Kertas A4</td><td>Stationery</td><td>Rim</td><td>12</td></tr>
+            <tr><td>ATK-002</td><td>Pulpen Biru</td><td>Stationery</td><td>Box</td><td>4</td></tr>
+            <tr><td>CLN-001</td><td>Cairan Pembersih</td><td>Cleaning</td><td>Liter</td><td>8</td></tr>
+          </tbody>
+        </table>
+        <div class="card-grid">
+          <div class="card"><h3>Field / kolom</h3><p>Nama, kategori, unit, tanggal, quantity, dan atribut lainnya.</p></div>
+          <div class="card"><h3>Record / baris</h3><p>Satu item atau satu transaksi dengan nilai yang saling berkaitan.</p></div>
+          <div class="card"><h3>Tipe data</h3><p>Text, number, date, atau nilai logis sesuai kebutuhan.</p></div>
+          <div class="card"><h3>Unique key</h3><p>Kode stabil yang membantu membedakan item, misalnya ATK-001.</p></div>
+        </div>
+        <div class="slide-number">05 / 13</div>
+      </section>
+
+      <section class="slide" data-title="Cleaning teks" data-note="Demonstrasikan pada kolom helper, jangan menimpa raw. TRIM menghapus spasi berlebih yang umum; CLEAN membantu membersihkan karakter non-printable; PROPER mengubah awal kata menjadi kapital; UPPER membuat huruf menjadi kapital. Untuk kode item, jangan asal memakai PROPER atau UPPER jika aturan kode harus persis dipertahankan—ikuti standar yang disepakati. Setelah cleaning, cek apakah hasilnya benar secara bisnis.">
+        <div class="eyebrow">05 · TEXT CLEANING</div>
+        <h2>Teks yang tidak konsisten bisa mengganggu lookup</h2>
+        <p class="lead">Spasi dan perbedaan penulisan kecil dapat membuat dua nilai tampak sama bagi manusia, tetapi berbeda bagi Excel.</p>
+        <div class="split-example">
+          <div class="example-card"><h3>Sebelum dibersihkan</h3><span class="sample">  kERTAS   a4  </span><small>Spasi di awal/akhir, spasi berlebih, serta kapitalisasi tidak konsisten.</small></div>
+          <div class="example-card"><h3>Contoh hasil</h3><span class="sample">Kertas A4</span><small>Nama lebih konsisten setelah diperiksa dan dibersihkan.</small></div>
+        </div>
+        <div class="formula-stack">
+          <div class="formula-row"><strong>TRIM</strong><code>=TRIM(A2)</code></div>
+          <div class="formula-row"><strong>CLEAN + TRIM</strong><code>=TRIM(CLEAN(A2))</code></div>
+          <div class="formula-row"><strong>PROPER</strong><code>=PROPER(A2)</code></div>
+          <div class="formula-row"><strong>UPPER</strong><code>=UPPER(A2)</code></div>
+        </div>
+        <div class="bottom-callout" style="margin-top:13px">Catatan: gunakan PROPER untuk nama teks yang cocok; jangan menerapkannya otomatis pada kode atau singkatan yang punya standar khusus.</div>
+        <div class="slide-number">06 / 13</div>
+      </section>
+
+      <section class="slide" data-title="Tanggal: nilai vs tampilan" data-note="Tekankan perbedaan nilai tanggal dengan tampilan tanggal. Format cell hanya mengubah bagaimana tanggal tampil jika nilainya memang dikenali Excel sebagai tanggal. ISNUMBER dapat membantu pemeriksaan awal karena tanggal Excel disimpan sebagai angka, namun TRUE saja tidak membuktikan nilai itu tanggal; periksa juga konteks dan format sumber. Untuk tanggal ambigu seperti 01/02/2026, konfirmasi apakah formatnya dd/mm/yyyy atau mm/dd/yyyy sebelum mengonversi.">
+        <div class="eyebrow">06 · DATE HANDLING</div>
+        <h2>Tanggal: nilai vs tampilan</h2>
+        <p class="lead">Tanggal bisa terlihat seragam, tetapi sumbernya belum tentu tersimpan sebagai nilai tanggal.</p>
+        <div class="compare">
+          <div class="compare-panel raw"><span class="panel-tag">Potensi masalah</span><h3>Tanggal sebagai teks</h3><table class="mini-table"><tbody><tr><td>1 Feb 2026</td><td class="bad">Text?</td></tr><tr><td>2026-02-01</td><td class="bad">Text?</td></tr><tr><td>01/02/2026</td><td class="bad">Ambigu</td></tr></tbody></table></div>
+          <div class="compare-panel master"><span class="panel-tag">Langkah pemeriksaan</span><h3>Periksa sebelum format</h3><div class="formula" style="margin:8px 0">=ISNUMBER(A2)</div><p style="font-size:11px">Jika nilainya sudah merupakan tanggal Excel, gunakan Ctrl + 1 untuk memilih tampilan seperti <b>dd/mm/yyyy</b>.</p></div>
+        </div>
+        <div class="bottom-callout" style="margin-top:16px"><strong>Ingat:</strong> Ctrl + 1 mengubah format tampilan, bukan otomatis mengubah teks menjadi tanggal. Konfirmasi format sumber untuk tanggal yang ambigu.</div>
+        <div class="slide-number">07 / 13</div>
+      </section>
+
+      <section class="slide" data-title="Angka dan mata uang" data-note="Peragakan contoh nilai 'Rp 300.000' yang bisa tersimpan sebagai teks, tergantung cara masuknya. Pada data simulasi dengan aturan pemisah ribuan yang sudah dipastikan, Ctrl+H dapat digunakan untuk menghapus awalan Rp, titik ribuan, atau spasi yang mengganggu. Selalu kerjakan pada salinan/helper column dan batasi pencarian pada kolom yang tepat. Periksa hasil dengan ISNUMBER dan SUM. Jika masih teks, gunakan konversi yang sesuai locale, misalnya VALUE pada teks yang sudah dibersihkan. Jangan gunakan langkah penghapusan titik jika titik adalah pemisah desimal pada sumber.">
+        <div class="eyebrow">07 · NUMBER CLEANING</div>
+        <h2>Angka yang terlihat benar belum tentu angka</h2>
+        <p class="lead">Jika nilai mata uang tersimpan sebagai teks, perhitungan bisa gagal atau hasilnya tidak sesuai harapan.</p>
+        <div class="layout-two" style="margin-top:22px">
+          <div>
+            <div class="example-card"><h3>Contoh nilai mentah</h3><span class="sample">Rp 300.000</span><small>Perlu memastikan apakah ini angka numerik atau teks hasil copy-paste.</small></div>
+            <div class="steps">
+              <div class="step"><div><h3>Kerjakan di kolom helper</h3><p>Jangan ubah data mentah agar sumber tetap bisa dibandingkan.</p></div></div>
+              <div class="step"><div><h3>Ctrl + H</h3><p>Bersihkan “Rp”, pemisah ribuan, atau spasi sesuai format sumber yang sudah dipastikan.</p></div></div>
+              <div class="step"><div><h3>Verifikasi</h3><p>Cek ISNUMBER dan uji SUM pada beberapa nilai.</p></div></div>
+            </div>
+          </div>
+          <div class="side-note"><h3>Checklist setelah cleaning</h3><p>✓ Hasilnya tidak lagi mengandung teks yang tidak diperlukan.</p><p>✓ Nilai terbaca sebagai angka.</p><p>✓ Total SUM sesuai dengan hitungan sampel.</p><p>✓ Data mentah tetap tersimpan.</p><p style="font-size:10px;color:#c8b2a0;margin-top:17px">Catatan: jangan menghapus tanda titik jika titik digunakan sebagai pemisah desimal pada sumber.</p></div>
+        </div>
+        <div class="slide-number">08 / 13</div>
+      </section>
+
+      <section class="slide" data-title="Validasi tipe data" data-note="Latih peserta berpikir bahwa cleaning tidak selesai setelah formula dipasang. Validasi hasil di beberapa level: cek tipe data (ISNUMBER), cek kosong, cek nilai negatif atau nol jika tidak masuk akal untuk field tersebut, dan cek total (SUM). Tidak semua nilai nol selalu salah—aturannya harus mengikuti konteks operasional. Rumus sederhana seperti SUM, AVERAGE, MAX, dan MIN adalah review yang ditargetkan, bukan topik utama baru.">
+        <div class="eyebrow">08 · QUICK QUALITY CHECK</div>
+        <h2>Jangan hanya bersihkan — verifikasi</h2>
+        <p class="lead">Pengecekan sederhana bisa mencegah kesalahan terbawa ke report atau costing.</p>
+        <div class="formula-stack">
+          <div class="formula-row"><strong>Cek angka</strong><code>=ISNUMBER(C2)</code></div>
+          <div class="formula-row"><strong>Jumlah total</strong><code>=SUM(C2:C10)</code></div>
+          <div class="formula-row"><strong>Nilai rata-rata</strong><code>=AVERAGE(C2:C10)</code></div>
+          <div class="formula-row"><strong>Nilai tertinggi</strong><code>=MAX(C2:C10)</code></div>
+          <div class="formula-row"><strong>Nilai terendah</strong><code>=MIN(C2:C10)</code></div>
+        </div>
+        <div class="card-grid">
+          <div class="card"><h3>Type check</h3><p>Apakah nilai sudah menjadi tipe yang benar?</p></div>
+          <div class="card"><h3>Completeness</h3><p>Apakah kolom wajib terisi?</p></div>
+          <div class="card"><h3>Reasonableness</h3><p>Apakah qty/harga masuk akal sesuai konteks?</p></div>
+          <div class="card"><h3>Reconciliation</h3><p>Apakah subtotal atau total cocok dengan pemeriksaan manual?</p></div>
+        </div>
+        <div class="slide-number">09 / 13</div>
+      </section>
+
+      <section class="slide" data-title="Praktik kelompok" data-note="Bagi peserta menjadi 9 kelompok, masing-masing 5 orang. Berikan dataset simulasi. Jelaskan bahwa setiap kelompok harus menyimpan Raw Data, membuat kolom helper atau hasil clean, mengidentifikasi data yang bermasalah, menyiapkan Master Item sederhana, dan memilih field yang layak jadi lookup key. Jika hanya memakai contoh sederhana, jangan menambahkan asumsi harga atau kebijakan operasional yang belum disetujui klien.">
+        <div class="eyebrow">09 · GROUP PRACTICE · 30 MENIT</div>
+        <h2>Praktik: siapkan data agar siap dipakai</h2>
+        <p class="lead">Kerjakan dalam kelompok. Fokus pada struktur, konsistensi, dan bukti pengecekan.</p>
+        <div class="layout-two" style="margin-top:22px">
+          <div class="steps">
+            <div class="step"><div><h3>Inspect</h3><p>Temukan kode tidak konsisten, spasi, tanggal, angka sebagai teks, atau field kosong.</p></div></div>
+            <div class="step"><div><h3>Prepare</h3><p>Buat kolom helper untuk hasil cleaning tanpa menimpa raw data.</p></div></div>
+            <div class="step"><div><h3>Build Master</h3><p>Susun kode item, nama baku, kategori, dan unit bila tersedia.</p></div></div>
+            <div class="step"><div><h3>Quality Check</h3><p>Gunakan pengecekan tipe data dan formula ringkas untuk verifikasi.</p></div></div>
+          </div>
+          <div class="side-note"><h3>Output kelompok</h3><p>01. Raw Request tetap utuh</p><p>02. Kolom helper / hasil cleaning</p><p>03. Master Item terstruktur</p><p>04. Daftar masalah data yang ditemukan</p><p>05. Alasan pemilihan lookup key</p></div>
+        </div>
+        <div class="slide-number">10 / 13</div>
+      </section>
+
+      <section class="slide" data-title="Peran anggota kelompok" data-note="Gunakan lima peran dan rotasikan di sesi berikutnya agar seluruh peserta mencoba bagian berbeda. Pada sesi pertama mungkin ada peran yang digabung jika kelompok hanya punya sedikit orang. Presenter/Documentator menyimpan bukti keputusan serta menyampaikan satu masalah utama dan satu validasi yang dilakukan.">
+        <div class="eyebrow">10 · COLLABORATION</div>
+        <h2>Setiap anggota punya peran</h2>
+        <p class="lead">Pembagian peran membantu kelompok bekerja lebih terstruktur dan memastikan semua anggota berkontribusi.</p>
+        <div class="role-grid">
+          <div class="role"><div class="role-no">01</div><h3>Raw Data Handler</h3><p>Menjaga data sumber dan mengidentifikasi masalah awal.</p></div>
+          <div class="role"><div class="role-no">02</div><h3>Formula Builder</h3><p>Menerapkan formula cleaning/helper yang diperlukan.</p></div>
+          <div class="role"><div class="role-no">03</div><h3>Quality Checker</h3><p>Memverifikasi tipe data dan kewajaran hasil.</p></div>
+          <div class="role"><div class="role-no">04</div><h3>Costing Analyst</h3><p>Memeriksa field yang nantinya penting untuk costing/BQ.</p></div>
+          <div class="role"><div class="role-no">05</div><h3>Presenter / Documentator</h3><p>Mencatat temuan dan menyampaikan hasil kelompok.</p></div>
+        </div>
+        <div class="bottom-callout" style="margin-top:17px">Rencana kelas: 9 kelompok × 5 peserta. Peran dapat dirotasi pada sesi berikutnya.</div>
+        <div class="slide-number">11 / 13</div>
+      </section>
+
+      <section class="slide" data-title="Review dan feedback" data-note="Alokasikan 20 menit untuk review. Minta beberapa kelompok menunjukkan satu perbaikan paling penting. Pertanyaan pemandu: Apa masalah data yang paling berisiko? Bagaimana kelompok memverifikasi hasil? Kolom mana yang layak jadi key dan kenapa? Apa yang masih perlu dikonfirmasi ke pemilik data? Tegaskan bahwa kebijakan bisnis dan nilai operasional yang belum diketahui jangan diasumsikan sendiri.">
+        <div class="eyebrow">11 · REVIEW & FEEDBACK · 20 MENIT</div>
+        <h2>Tutup sesi dengan validasi bersama</h2>
+        <p class="lead">Bukan hanya hasil akhirnya yang dinilai, tetapi juga cara kelompok mengecek kualitas data.</p>
+        <div class="timeline">
+          <div class="time-box"><strong>10′</strong><span>Konsep dan demo tutor</span></div>
+          <div class="time-box"><strong>30′</strong><span>Praktik kelompok</span></div>
+          <div class="time-box active-time"><strong>20′</strong><span>Review, presentasi, feedback</span></div>
+        </div>
+        <div style="margin-top:24px">
+          <div class="keyline"><span class="dot"></span><p><b>Apa masalah data utama yang ditemukan?</b> Minta kelompok menyebutkan contoh konkret.</p></div>
+          <div class="keyline"><span class="dot"></span><p><b>Bagaimana kelompok memastikan hasilnya benar?</b> Cari bukti validasi, bukan hanya klaim.</p></div>
+          <div class="keyline"><span class="dot"></span><p><b>Field mana yang bisa menjadi lookup key?</b> Pastikan kodenya unik dan cukup stabil.</p></div>
+          <div class="keyline"><span class="dot"></span><p><b>Apa yang perlu dikonfirmasi?</b> Tandai data atau aturan yang tidak jelas untuk ditanyakan ke pemilik proses.</p></div>
+        </div>
+        <div class="slide-number">12 / 13</div>
+      </section>
+
+      <section class="slide" data-title="Ringkasan rumus" data-note="Akhiri dengan ringkasan rumus yang digunakan dalam sesi ini. Tidak semua formula harus dikuasai sekaligus. Fokuskan peserta pada pemahaman kapan dan mengapa formula dipakai. Sampaikan bahwa IF/IFS, AND/OR, IFERROR dan validasi rule akan dibahas pada Sesi 2; FILTER pada Sesi 3; VLOOKUP/XLOOKUP pada Sesi 4.">
+        <div class="eyebrow">12 · QUICK REFERENCE</div>
+        <h2>Ringkasan formula sesi 1</h2>
+        <p class="lead">Mulai dari rumus sederhana dan pengecekan yang bisa langsung membantu pekerjaan harian.</p>
+        <div class="formula-stack">
+          <div class="formula-row"><strong>TRIM</strong><code>=TRIM(A2)</code></div>
+          <div class="formula-row"><strong>CLEAN + TRIM</strong><code>=TRIM(CLEAN(A2))</code></div>
+          <div class="formula-row"><strong>Periksa angka</strong><code>=ISNUMBER(C2)</code></div>
+          <div class="formula-row"><strong>Total</strong><code>=SUM(C2:C10)</code></div>
+          <div class="formula-row"><strong>Statistik ringkas</strong><code>=AVERAGE(C2:C10) · =MAX(C2:C10) · =MIN(C2:C10)</code></div>
+        </div>
+        <div class="bottom-callout" style="margin-top:17px"><strong>Pesan sesi ini:</strong> data yang terstruktur dan sudah diverifikasi adalah fondasi workflow otomatis yang bisa dipakai ulang.</div>
+        <p style="font-size:10px;margin-top:16px;color:#968779">Dataset latihan bersifat simulasi. Asumsi biaya, management fee, dan ambang margin harus dikonfirmasi kepada klien sebelum dipakai sebagai kebijakan.</p>
+        <div class="slide-number">13 / 13</div>
+      </section>
+    </div>
+  </main>
+
+  <footer class="controls">
+    <div class="progress-wrap"><span class="counter" id="counter">01 / 13</span><div class="progress-track" aria-label="Kemajuan presentasi"><div class="progress-fill" id="progressFill"></div></div></div>
+    <div class="keyboard-hint">Navigasi: ← → / Space</div>
+    <div class="navs"><button class="nav-btn" id="prevBtn" type="button" aria-label="Slide sebelumnya" disabled>←</button><button class="nav-btn" id="nextBtn" type="button" aria-label="Slide selanjutnya">→</button></div>
+  </footer>
+
+  <div class="note-pop" id="notePop" role="dialog" aria-modal="true" aria-labelledby="noteTitle">
+    <div class="note-card">
+      <div class="note-head"><h3 id="noteTitle">Catatan tutor</h3><button class="quiet-btn" id="closeNotes" style="color:var(--coffee);border-color:var(--line)" type="button">Tutup ✕</button></div>
+      <p id="noteText"></p>
+    </div>
+  </div>
+  <div class="note-pop" id="outlinePop" role="dialog" aria-modal="true" aria-labelledby="outlineTitle">
+    <div class="note-card">
+      <div class="note-head"><h3 id="outlineTitle">Daftar materi</h3><button class="quiet-btn" id="closeOutline" style="color:var(--coffee);border-color:var(--line)" type="button">Tutup ✕</button></div>
+      <div id="outlineList"></div>
+    </div>
+  </div>
+
+  <script>
+    (() => {
+      const slides = Array.from(document.querySelectorAll('.slide'));
+      const prevBtn = document.getElementById('prevBtn');
+      const nextBtn = document.getElementById('nextBtn');
+      const counter = document.getElementById('counter');
+      const progressFill = document.getElementById('progressFill');
+      const notesBtn = document.getElementById('notesBtn');
+      const notePop = document.getElementById('notePop');
+      const noteText = document.getElementById('noteText');
+      const noteTitle = document.getElementById('noteTitle');
+      const outlinePop = document.getElementById('outlinePop');
+      const outlineList = document.getElementById('outlineList');
+      let current = 0;
+
+      const pad = (number) => String(number).padStart(2, '0');
+      function showSlide(index) {
+        current = Math.max(0, Math.min(slides.length - 1, index));
+        slides.forEach((slide, i) => {
+          slide.classList.toggle('active', i === current);
+          slide.classList.toggle('exit-left', i < current);
+          slide.setAttribute('aria-hidden', i === current ? 'false' : 'true');
+        });
+        counter.textContent = `${pad(current + 1)} / ${pad(slides.length)}`;
+        progressFill.style.width = `${((current + 1) / slides.length) * 100}%`;
+        prevBtn.disabled = current === 0;
+        nextBtn.disabled = current === slides.length - 1;
+        document.title = `${pad(current + 1)} — ${slides[current].dataset.title} | PMD`;
+        if (notePop.classList.contains('open')) updateNote();
+      }
+      function updateNote() {
+        noteTitle.textContent = `Catatan tutor · ${slides[current].dataset.title}`;
+        noteText.textContent = slides[current].dataset.note || 'Tidak ada catatan untuk slide ini.';
+      }
+      function openNotes() { updateNote(); notePop.classList.add('open'); document.getElementById('closeNotes').focus(); }
+      function closeNotes() { notePop.classList.remove('open'); notesBtn.focus(); }
+      function openOutline() { outlinePop.classList.add('open'); document.getElementById('closeOutline').focus(); }
+      function closeOutline() { outlinePop.classList.remove('open'); document.getElementById('outlineBtn').focus(); }
+
+      prevBtn.addEventListener('click', () => showSlide(current - 1));
+      nextBtn.addEventListener('click', () => showSlide(current + 1));
+      notesBtn.addEventListener('click', openNotes);
+      document.getElementById('closeNotes').addEventListener('click', closeNotes);
+      document.getElementById('outlineBtn').addEventListener('click', openOutline);
+      document.getElementById('closeOutline').addEventListener('click', closeOutline);
+      document.getElementById('fullscreenBtn').addEventListener('click', async () => {
+        const target = document.getElementById('presentation');
+        try {
+          if (!document.fullscreenElement) await target.requestFullscreen();
+          else await document.exitFullscreen();
+        } catch (error) { alert('Mode layar penuh tidak didukung pada browser ini.'); }
+      });
+      [notePop, outlinePop].forEach(pop => pop.addEventListener('click', event => { if (event.target === pop) pop.classList.remove('open'); }));
+      document.addEventListener('keydown', event => {
+        if (notePop.classList.contains('open') || outlinePop.classList.contains('open')) {
+          if (event.key === 'Escape') { notePop.classList.remove('open'); outlinePop.classList.remove('open'); }
+          return;
+        }
+        if (['ArrowRight', 'PageDown', ' '].includes(event.key)) { event.preventDefault(); showSlide(current + 1); }
+        if (['ArrowLeft', 'PageUp'].includes(event.key)) { event.preventDefault(); showSlide(current - 1); }
+        if (event.key === 'Home') showSlide(0);
+        if (event.key === 'End') showSlide(slides.length - 1);
+      });
+      slides.forEach((slide, index) => {
+        const li = document.createElement('button');
+        li.type = 'button';
+        li.textContent = `${pad(index + 1)}  ${slide.dataset.title}`;
+        li.style.cssText = 'display:block;width:100%;text-align:left;padding:11px 12px;margin:5px 0;border:1px solid #e7d9c9;border-radius:8px;background:#fffdf9;color:#493126;cursor:pointer;font-size:12px';
+        li.addEventListener('click', () => { showSlide(index); closeOutline(); });
+        outlineList.appendChild(li);
+      });
+      showSlide(0);
+    })();
+  </script>
+</body>
+</html>
